@@ -1,0 +1,45 @@
+{% extends 'ats/base.html' %}
+
+{% block content %}
+   {{ area_name }} район. Список АТС:
+    <ul>
+        {% for lst in list_ats %}
+            {% if not forloop.last %}
+                <li><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% else %}
+                <li class="last"><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    состояние на АТС {{ at.name }}:
+    <ul>
+    <h4>Направление КЛС:</h4>
+        {% for lst in list_cable %}
+                <li>{{ lst.direction }}</li>
+        {% endfor %}
+        <h4>Кроссы на АТС:</h4>
+        {% for lst in list_cross %}
+                <li>{{ lst }}</li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
+        {% csrf_token %}
+        <h3>Форма добавления КЛС</h3>
+        <h4>Добавьте КЛС</h4>
+        {{ form_cable.as_p }}
+        <button type="submit">Добавить</button><br>
+    </form>
+    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
+        {% csrf_token %}
+        <h3>Форма добавления кросса</h3>
+        <h4>Добавьте кросс</h4>
+        {{ form_cross.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4>Добавьте примечание</h4>
+        {{ form_note.as_p }}
+        <button type="submit">Добавить</button>
+    </form>
+{% endblock %}

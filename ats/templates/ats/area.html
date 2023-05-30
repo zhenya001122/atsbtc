@@ -1,0 +1,18 @@
+{% extends 'ats/base.html' %}
+
+{% block content %}
+    {{ dep.name }} - cписок, обслуживаемых районов:
+    <ul>
+        {% for lst in list_area %}
+            {% if not forloop.last %}
+                <li><a href="{{ lst.get_absolute_url }}">{{ lst.name }}</a></li>
+            {% else %}
+                <li class="last"><a href="{{ lst.get_absolute_url }}">{{ lst.name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_area' dep_slug=dep.slug %}">Добавить новый район</a>
+    Добавить общий вывод информации по АТС обслуживаемых районов
+{% endblock %}
+
+

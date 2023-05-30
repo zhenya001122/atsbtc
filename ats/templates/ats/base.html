@@ -1,0 +1,34 @@
+{% load static %}
+{% load dep_tag %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+{% block lst_department %}
+    <a href="{% url 'home' %}">На главную</a>
+    <a href="/admin/">Админка</a>
+    {% if request.user.is_authenticated %}
+        <li> <a href="{% url 'logout' %}">Выйти</a></li>
+        <p>Вы авторизованы. Добро пожаловать, {{ request.user.username }}</p>
+    {% else %}
+    <li> <a href="{% url 'login' %}">Войти</a></li>
+    {% endif %}
+    {% getdep as list_dep %}
+    <ul>
+        {% for lst in list_dep %}
+            {% if not forloop.last %}
+                <li><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% else %}
+                <li class="last"><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock lst_department %}
+
+{% block content %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends 'ats/base.html' %}
+
+{% block content %}
+    <ul>
+        {% for lst in list_area %}
+            {% if not forloop.last %}
+                <li><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% else %}
+                <li class="last"><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    {{ ar.name }} район - cписок обслуживаемых АТС:
+    <ul>
+        {% for lst in page_obj %}
+            {% if not forloop.last %}
+                <li><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% else %}
+                <li class="last"><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_ats' area_slug=ar.slug %}">Добавить АТС</a>
+    <nav>
+    <ul>
+        {% for p in page_obj.paginator.page_range %}
+        <li>
+            <a href="?page={{ p }}">{{ p }}</a>Страница пагинации
+        </li>
+        {% endfor %}
+    </ul>
+</nav>
+{% endblock %}
