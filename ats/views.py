@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpResponseNotFound
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import UpdateView
 
 from ats.forms import AddCrossForm, AddAtsForm, AddAreaForm, AddCableForm, AddNoteForm
 from ats.models import Department, Area, Ats, Cable, Cross
@@ -89,6 +90,30 @@ def add_ats(request, area_slug):
             'form_ats': form_ats,
         }
         return render(request, 'ats/add_ats.html', context=context)
+    else:
+        return redirect('login')
+
+class AtsUpdateView(UpdateView):
+    """
+    Представление: обновления АТС
+    """
+    model = Ats
+    template_name = 'ats/edit_ats.html'
+    context_object_name = 'at'
+    fields = ['name', 'area']
+
+    def get_object(self, queryset=None):
+        return Ats.objects.get(slug=self.kwargs.get("ats_slug"))
+
+def delete_ats(request, ats_slug):
+    if request.user.is_authenticated:
+        try:
+            at = Ats.objects.get(slug=ats_slug)
+            area_slug = Ats.objects.get(slug=ats_slug).area.slug
+            at.delete()
+            return redirect(f'/ats/{area_slug}')
+        except Ats.DoesNotExist:
+            return HttpResponseNotFound("<h2>АТС не найдена</h2>")
     else:
         return redirect('login')
 

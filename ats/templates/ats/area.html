@@ -1,7 +1,7 @@
 {% extends 'ats/base.html' %}
 
 {% block content %}
-    {{ dep.name }} - cписок, обслуживаемых районов:
+    {{ dep.name }} - cписок обслуживаемых районов:
     <ul>
         {% for lst in list_area %}
             {% if not forloop.last %}

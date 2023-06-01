@@ -1,7 +1,7 @@
 {% extends 'ats/base.html' %}
 
 {% block content %}
-    Форма добавления АТС
+    {{ ar.name }} район. Форма добавления АТС
     <h4>Добавьте АТС</h4>
     <form action="{% url 'add_ats' area_slug=ar.slug %}" method="post">
         {% csrf_token %}

@@ -1,0 +1,10 @@
+{% extends 'ats/base.html' %}
+
+{% block content %}
+    <h4>Измените данные АТС {{ at.name }}</h4>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Изменить</button>
+    </form>
+{% endblock %}
