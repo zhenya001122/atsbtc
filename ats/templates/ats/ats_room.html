@@ -1,25 +1,19 @@
-{% extends 'ats/base.html' %}
+{% extends 'ats/ats_lst.html' %}
 
-{% block content %}
-   {{ area_name }} район. Список АТС:
-    <ul>
-        {% for lst in list_ats %}
-            {% if not forloop.last %}
-                <li><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
-            {% else %}
-                <li class="last"><a href="{{ lst.get_absolute_url }}">{{lst.name}}</a></li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+{% block ats %}
     состояние на АТС {{ at.name }}:
     <ul>
-    <h4>Направление КЛС:</h4>
+        <h4>Направление КЛС:</h4>
         {% for lst in list_cable %}
-                <li>{{ lst.direction }}</li>
+            <li>{{ lst.direction }}</li>
+            <a href="{% url 'edit_cable' cable_slug=lst.slug %}">Изменить</a> |
+            <a href="{% url 'delete_cable' cable_slug=lst.slug %}">Удалить</a>
         {% endfor %}
         <h4>Кроссы на АТС:</h4>
         {% for lst in list_cross %}
-                <li>{{ lst }}</li>
+            <li>{{ lst }}</li>
+            <a href="{% url 'edit_ats' ats_slug=lst.slug %}">Изменить</a> |
+            <a href="{% url 'delete_ats' ats_slug=lst.slug %}">Удалить</a>
         {% endfor %}
     </ul>
     <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
@@ -27,7 +21,8 @@
         <h3>Форма добавления КЛС</h3>
         <h4>Добавьте КЛС</h4>
         {{ form_cable.as_p }}
-        <button type="submit">Добавить</button><br>
+        <button type="submit">Добавить</button>
+        <br>
     </form>
     <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
         {% csrf_token %}

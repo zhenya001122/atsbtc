@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "ats/base.html" %}
+{% block content %}
+   <form method="post">
+       {% csrf_token %}
+
+
+       <p>
+           Ты точно уверен, что хочешь удалить АТС
+           <em>"{{ ats.name }}"</em>?
+       </p>
+       <input type="submit" value="Да, уверен">
+   </form>
+   <a href="{% url 'ats'  area_slug=area.slug %}">
+       <button>Да ну на...</button></a>
+{% endblock %}

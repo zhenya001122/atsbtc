@@ -53,7 +53,7 @@ class Ats(models.Model):
     """Модель списка АТС"""
     name = models.CharField(max_length=20, verbose_name='Наименование АТС')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
-    area = models.ForeignKey('Area', on_delete=models.PROTECT, null=True, verbose_name='Район')
+    area = models.ForeignKey('Area', on_delete=models.CASCADE, verbose_name='Район')
 
     def __str__(self):
         return self.name
@@ -84,8 +84,8 @@ class Cable(models.Model):
     grounding = models.BooleanField(blank=True, verbose_name='Наличие заземления')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
-    cross = models.ForeignKey('Cross', on_delete=models.PROTECT, null=True, verbose_name='Кросс')
-    ats = models.ForeignKey('Ats', on_delete=models.PROTECT, null=True, verbose_name='АТС')
+    cross = models.ForeignKey('Cross', on_delete=models.CASCADE, verbose_name='Кросс')
+    ats = models.ForeignKey('Ats', on_delete=models.CASCADE, verbose_name='АТС')
 
     def __str__(self):
         return self.direction
@@ -97,6 +97,9 @@ class Cable(models.Model):
         if not self.slug:
             self.slug = unique_slugify(self, self.direction)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('ats_room', kwargs={'ats_slug': Cable.objects.get(slug=self.slug).ats.slug})
 
     class Meta:
         verbose_name = 'КЛС'
@@ -113,7 +116,7 @@ class Cross(models.Model):
     photo_insert = models.ImageField(blank=True, upload_to="photos/%Y/%m/%d/", verbose_name='Фото вкладыша')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
-    ats = models.ForeignKey('Ats', on_delete=models.CASCADE, null=True, verbose_name='АТС')
+    ats = models.ForeignKey('Ats',  on_delete=models.CASCADE, verbose_name='АТС')
 
     def __str__(self):
         return f"{self.ats.name}-{self.number}"

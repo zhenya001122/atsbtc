@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "ats/base.html" %}
+{% block content %}
+   <form method="post">
+       {% csrf_token %}
+
+
+       <p>
+           Ты точно уверен, что хочешь удалить эту КЛС
+           <em>"{{ cable.direction }}"</em>
+           созданную {{ cable.time_create|date:'Y-m-d' }}?
+       </p>
+       <input type="submit" value="Да, уверен">
+   </form>
+   <a href="{% url 'ats_room' ats_slug=ats.slug %}">
+       <button>Отмена</button></a>
+{% endblock %}
