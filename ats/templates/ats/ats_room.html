@@ -11,7 +11,7 @@
         {% endfor %}
         <h4>Кроссы на АТС:</h4>
         {% for lst in list_cross %}
-            <li>{{ lst }}</li>
+            <li>{{ lst }}{{ lst.photo_cross }}</li>
             <a href="{% url 'edit_cross' cross_slug=lst.slug %}">Изменить</a> |
             <a href="{% url 'delete_cross' cross_slug=lst.slug %}">Удалить</a>
         {% endfor %}
@@ -30,7 +30,7 @@
         <button type="submit">Добавить</button>
         <br>
     </form>
-    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
+    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <h3>Форма добавления кросса</h3>
         <h4>Добавьте кросс</h4>

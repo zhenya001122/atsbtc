@@ -82,6 +82,7 @@ class Cable(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     tag = models.CharField(max_length=40, verbose_name='Бирка на кабеле')
     grounding = models.BooleanField(blank=True, verbose_name='Наличие заземления')
+    passport = models.FileField(blank=True, upload_to="passports/%Y/%m/%d/", verbose_name='Паспорт КЛС')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
     cross = models.ForeignKey('Cross', on_delete=models.CASCADE, verbose_name='Кросс')
