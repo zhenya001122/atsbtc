@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import UpdateView, DeleteView
 
 from ats.forms import AddCrossForm, AddAtsForm, AddAreaForm, AddCableForm, AddNoteForm
-from ats.models import Department, Area, Ats, Cable, Cross
+from ats.models import Department, Area, Ats, Cable, Cross, Note
 
 
 def index(request):
@@ -137,6 +137,8 @@ def ats_room(request, ats_slug):
         at = Ats.objects.get(slug=ats_slug)
         list_cable = Cable.objects.filter(ats__name=at.name)
         list_cross = Cross.objects.filter(ats__name=at.name)
+
+        list_note = Note.objects.all()# потом убрать или изменить связь в модели FK к Ats
         paginator = Paginator(list_ats, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -167,6 +169,7 @@ def ats_room(request, ats_slug):
             'at': at,
             'list_cable': list_cable,
             'list_cross': list_cross,
+            'list_note': list_note,
             'page_obj': page_obj
         }
         return render(request, 'ats/ats_room.html', context=context)
@@ -236,5 +239,38 @@ def delete_cross(request, cross_slug):
             'cross': cross_obj
         }
         return render(request, 'ats/delete_cross.html', context=context)
+    else:
+        return redirect('login')
+
+
+class NoteUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Представление: обновления примечания
+    """
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    model = Note
+    template_name = 'ats/edit_note.html'
+    context_object_name = 'note'
+    fields = ['description']
+
+    def get_object(self, queryset=None):
+        return Note.objects.get(id=self.kwargs.get("note_id"))
+
+def delete_note(request, note_id):
+    if request.user.is_authenticated:
+        note_obj = Note.objects.get(pk=note_id)
+        # ats_obj = Cross.objects.get(slug=cross_slug).ats
+        if request.method == 'POST':
+            try:
+                note_obj.delete()
+                return redirect(f'/ats_room/zhdanovichi')#изменить адрес
+            except Ats.DoesNotExist:
+                return HttpResponseNotFound("<h2>Кросс не найден</h2>")
+        context = {
+            # 'ats': ats_obj,
+            'note': note_obj
+        }
+        return render(request, 'ats/delete_note.html', context=context)
     else:
         return redirect('login')

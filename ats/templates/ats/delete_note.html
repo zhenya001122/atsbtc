@@ -1,0 +1,14 @@
+{% extends "ats/base.html" %}
+{% block content %}
+   <form method="post">
+       {% csrf_token %}
+
+
+       <p>
+           Ты точно уверен, что хочешь удалить примечание
+       </p>
+       <input type="submit" value="Да, уверен">
+   </form>
+   <a href="{% url 'ats_room' ats_slug='zhdanovichi' %}">
+       <button>Отмена</button></a>
+{% endblock %}

@@ -148,3 +148,9 @@ class Note(models.Model):
     class Meta:
         verbose_name = 'Примечания'
         verbose_name_plural = 'Примечания'
+
+    def __str__(self):
+        return self.description
+
+    def get_absolute_url(self):
+        return reverse('ats_room', kwargs={'ats_slug': 'zhdanovichi'})# убрать или сделать перенаправление нормальное

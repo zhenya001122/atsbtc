@@ -15,6 +15,12 @@
             <a href="{% url 'edit_cross' cross_slug=lst.slug %}">Изменить</a> |
             <a href="{% url 'delete_cross' cross_slug=lst.slug %}">Удалить</a>
         {% endfor %}
+        <h4>примечания на АТС {{ at.name }}:</h4>
+        {% for lst in list_note %}
+            <li>{{ lst }}</li>
+            <a href="{% url 'edit_note' note_id=lst.pk %}">Изменить</a> |
+            <a href="{% url 'delete_note' note_id=lst.pk %}">Удалить</a>
+        {% endfor %}
     </ul>
     <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
         {% csrf_token %}
