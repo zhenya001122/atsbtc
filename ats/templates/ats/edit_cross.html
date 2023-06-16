@@ -1,7 +1,7 @@
 {% extends 'ats/base.html' %}
 
 {% block content %}
-    <h4>Измените данные АТС {{ ats.name }}</h4>
+    <h4>Измените данные кросса {{ cross.number }}</h4>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

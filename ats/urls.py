@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import index, area, ats, ats_room, add_area, add_ats, delete_ats, AtsUpdateView, CableUpdateView, \
-    CableDeleteView
+    CableDeleteView, CrossUpdateView, delete_cross
 
 urlpatterns = [
     path('', index, name='home'),
@@ -13,6 +13,8 @@ urlpatterns = [
     path('area/<slug:dep_slug>/', area, name='area'),
     path('ats_room/<slug:ats_slug>/', ats_room, name='ats_room'),
     path('edit_cable/<slug:cable_slug>/', CableUpdateView.as_view(), name='edit_cable'),
-    path('delete_cable/<slug:cable_slug>', CableDeleteView.as_view(), name='delete_cable')
+    path('delete_cable/<slug:cable_slug>', CableDeleteView.as_view(), name='delete_cable'),
+    path('edit_cross/<slug:cross_slug>/', CrossUpdateView.as_view(), name='edit_cross'),
+    path('delete_cross/<slug:cross_slug>', delete_cross, name='delete_cross'),
 ]
 

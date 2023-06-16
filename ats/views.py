@@ -103,29 +103,11 @@ class AtsUpdateView(LoginRequiredMixin, UpdateView):
     redirect_field_name = 'redirect_to'
     model = Ats
     template_name = 'ats/edit_ats.html'
-    context_object_name = 'at'
+    context_object_name = 'ats'
     fields = ['name', 'area']
 
     def get_object(self, queryset=None):
         return Ats.objects.get(slug=self.kwargs.get("ats_slug"))
-
-
-# class AtsDeleteView(LoginRequiredMixin, DeleteView):
-#     login_url = '/login/'
-#     redirect_field_name = 'redirect_to'
-#     model = Ats
-#     template_name = 'ats/delete_ats.html'
-#     context_object_name = 'ats'
-#     success_url = reverse_lazy('home')#перенаправить на ats/area_slug/ ,
-#                     # как извлечь и передать area_slug в reverse_lazy("ats")?
-#
-#     def get_object(self, queryset=None):
-#         return Ats.objects.get(slug=self.kwargs.get("ats_slug"))
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['area'] = Ats.objects.get(slug=self.object.slug).area
-#         return context
 
 
 def delete_ats(request, ats_slug):
@@ -223,3 +205,36 @@ class CableDeleteView(LoginRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['ats'] = Cable.objects.get(slug=self.object.slug).ats
         return context
+
+
+class CrossUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Представление: обновления кросса
+    """
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    model = Cross
+    template_name = 'ats/edit_cross.html'
+    context_object_name = 'cross'
+    fields = ['number', 'tag', 'photo_cross', 'photo_insert', 'ats']
+
+    def get_object(self, queryset=None):
+        return Cross.objects.get(slug=self.kwargs.get("cross_slug"))
+
+def delete_cross(request, cross_slug):
+    if request.user.is_authenticated:
+        cross_obj = Cross.objects.get(slug=cross_slug)
+        ats_obj = Cross.objects.get(slug=cross_slug).ats
+        if request.method == 'POST':
+            try:
+                cross_obj.delete()
+                return redirect(f'/ats_room/{ats_obj.slug}')
+            except Ats.DoesNotExist:
+                return HttpResponseNotFound("<h2>Кросс не найден</h2>")
+        context = {
+            'ats': ats_obj,
+            'cross': cross_obj
+        }
+        return render(request, 'ats/delete_cross.html', context=context)
+    else:
+        return redirect('login')

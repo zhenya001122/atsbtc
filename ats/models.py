@@ -129,6 +129,9 @@ class Cross(models.Model):
             self.slug = unique_slugify(self, self.number)
         super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse('ats_room', kwargs={'ats_slug': Cross.objects.get(slug=self.slug).ats.slug})
+
     class Meta:
         verbose_name = 'Кроссы'
         verbose_name_plural = 'Кроссы'

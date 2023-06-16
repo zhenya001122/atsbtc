@@ -1,0 +1,16 @@
+{% extends "ats/base.html" %}
+{% block content %}
+   <form method="post">
+       {% csrf_token %}
+
+
+       <p>
+           Ты точно уверен, что хочешь удалить этот кросс
+           <em>"{{ cross.number }}"</em>
+           созданный {{ cross.time_create|date:'Y-m-d' }}?
+       </p>
+       <input type="submit" value="Да, уверен">
+   </form>
+   <a href="{% url 'ats_room' ats_slug=ats.slug %}">
+       <button>Отмена</button></a>
+{% endblock %}

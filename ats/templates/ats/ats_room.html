@@ -12,8 +12,8 @@
         <h4>Кроссы на АТС:</h4>
         {% for lst in list_cross %}
             <li>{{ lst }}</li>
-            <a href="{% url 'edit_ats' ats_slug=lst.slug %}">Изменить</a> |
-            <a href="{% url 'delete_ats' ats_slug=lst.slug %}">Удалить</a>
+            <a href="{% url 'edit_cross' cross_slug=lst.slug %}">Изменить</a> |
+            <a href="{% url 'delete_cross' cross_slug=lst.slug %}">Удалить</a>
         {% endfor %}
     </ul>
     <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
