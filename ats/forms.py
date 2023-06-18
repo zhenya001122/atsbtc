@@ -28,7 +28,7 @@ class AddCableForm(forms.ModelForm):
         self.fields['ats'].empty_label = "Выберите АТС"
     class Meta:
         model = Cable
-        fields = ['sl', 'direction', 'tag', 'grounding', 'cross', 'ats']
+        fields = ['sl', 'direction', 'tag', 'grounding', 'passport', 'cross', 'ats']
 
 
 class AddCrossForm(forms.ModelForm):

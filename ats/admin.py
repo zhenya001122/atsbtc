@@ -35,7 +35,7 @@ class AtsAdmin(admin.ModelAdmin):
 
 @admin.register(Cable)
 class CableAdmin(admin.ModelAdmin):
-    list_display = ('sl', 'direction', 'tag', 'grounding', 'time_create', 'time_update')
+    list_display = ('sl', 'direction', 'tag', 'grounding', 'passport', 'time_create', 'time_update')
     list_filter = ('tag', 'grounding')
     list_display_links = ('sl', 'direction',)
     list_editable = ('grounding',)
