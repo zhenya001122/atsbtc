@@ -5,13 +5,26 @@
     <ul>
         <h4>Направление КЛС:</h4>
         {% for lst in list_cable %}
-            <li>{{ lst.direction }}</li>
+            {% if lst.passport %}
+            <li>{{ lst.direction }} <a href="{{ lst.passport.url }}" target="_blank" title="Открыть паспорт в новом окне">{{ lst.direction }}</a></li>
+            {% else %}
+                <li>{{ lst.direction }}</li>
+            {% endif %}
             <a href="{% url 'edit_cable' cable_slug=lst.slug %}">Изменить</a> |
             <a href="{% url 'delete_cable' cable_slug=lst.slug %}">Удалить</a>
         {% endfor %}
         <h4>Кроссы на АТС:</h4>
         {% for lst in list_cross %}
-            <li>{{ lst }}{{ lst.photo_cross }}</li>
+            {% if lst.photo_cross and lst.photo_insert %}
+            <li>{{ lst }} <a href="{{ lst.photo_cross.url }}" target="_blank"> <img src="{{ lst.photo_cross.url }}" width="50px"></a>
+                <a href="{{ lst.photo_insert.url }}" target="_blank"><img src="{{ lst.photo_insert.url }}" width="50px"></a></li>
+                {% elif lst.photo_cross %}
+                <li>{{ lst }} <a href="{{ lst.photo_cross.url }}" target="_blank"><img src="{{ lst.photo_cross.url }}" width="50px"></a></li>
+                {% elif lst.photo_insert %}
+                <li>{{ lst }} <a href="{{ lst.photo_insert.url }}" target="_blank"><img src="{{ lst.photo_insert.url }}" width="50px"></a></li>
+            {% else %}
+                <li>{{ lst }}</li>
+            {% endif %}
             <a href="{% url 'edit_cross' cross_slug=lst.slug %}">Изменить</a> |
             <a href="{% url 'delete_cross' cross_slug=lst.slug %}">Удалить</a>
         {% endfor %}
@@ -22,7 +35,7 @@
             <a href="{% url 'delete_note' note_id=lst.pk %}">Удалить</a>
         {% endfor %}
     </ul>
-    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
+    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <h3>Форма добавления КЛС</h3>
         <h4>Добавьте КЛС</h4>
@@ -37,7 +50,7 @@
         {{ form_cross.as_p }}
         <button type="submit">Добавить</button>
     </form>
-    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
         {% csrf_token %}
         <h4>Добавьте примечание</h4>
         {{ form_note.as_p }}

@@ -143,7 +143,7 @@ def ats_room(request, ats_slug):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         if request.method == 'POST':
-            form_cable = AddCableForm(list_cross, request.POST)
+            form_cable = AddCableForm(list_cross, request.POST, request.FILES)
             form_cross = AddCrossForm(request.POST, request.FILES)
             form_note = AddNoteForm(list_cross, list_cable, request.POST)
             if form_cable.is_valid():
@@ -186,7 +186,7 @@ class CableUpdateView(LoginRequiredMixin, UpdateView):
     model = Cable
     template_name = 'ats/edit_cable.html'
     context_object_name = 'cable'
-    fields = ['sl', 'direction', 'tag', 'grounding', 'cross', 'ats']
+    fields = ['sl', 'direction', 'tag', 'grounding', 'passport', 'cross', 'ats']
 
     def get_object(self, queryset=None):
         return Cable.objects.get(slug=self.kwargs.get("cable_slug"))

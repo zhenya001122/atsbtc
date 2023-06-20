@@ -2,7 +2,7 @@
 
 {% block content %}
     <h4>Измените данные кросса {{ cross.number }}</h4>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Изменить</button>
