@@ -1,35 +1,55 @@
 {% extends 'ats/base.html' %}
 
 {% block content %}
-    {% block ats_lst %}
-        {{ ar.name }} район - cписок обслуживаемых АТС:
-        <ul>
-            {% for lst in page_obj %}
-                {% if not forloop.last %}
-                    <li><a href="{{ lst.get_absolute_url }}">{{ lst.name }}</a></li>
-                    <a href="{% url 'edit_ats' ats_slug=lst.slug %}">Изменить</a> |
-                    <a href="{% url 'delete_ats' ats_slug=lst.slug %}">Удалить</a>
-                {% else %}
-                    <li class="last"><a href="{{ lst.get_absolute_url }}">{{ lst.name }}</a></li>
-                    <a href="{% url 'edit_ats' ats_slug=lst.slug %}">Изменить</a> |
-                    <a href="{% url 'delete_ats' ats_slug=lst.slug %}">Удалить</a>
-                {% endif %}
-            {% endfor %}
-        </ul>
-        <nav>
-            <ul>
-                {% for p in page_obj.paginator.page_range %}
-                    <li>
-                        <a href="?page={{ p }}">{{ p }}</a>Страница пагинации
-                    </li>
-                {% endfor %}
-            </ul>
-        </nav>
-    {% endblock %}
+  {% block ats_lst %}
+    <table class="table table-bordered border-primary caption-top">
+      <caption>{{ ar.name }} район. Список АТС</caption>
+      <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">Наименование АТС</th>
+        {#        <th scope="col">СЛ №</th>#}
+        {#        <th scope="col">Направление КЛС</th>#}
+        {#        <th scope="col">Бирка на кабеле</th>#}
+        {#        <th scope="col">Наличие заземления</th>#}
+        {#        <th scope="col">Линейный паспорт</th>#}
+        {#        <th scope="col">Номер кросса</th>#}
+        {#        <th scope="col">Наличие бирки на кроссе</th>#}
+        {#        <th scope="col">Фото кросса</th>#}
+        {#        <th scope="col">Фото вкладыша</th>#}
+        {#        <th scope="col">Примечание</th>#}
+      </tr>
 
-    {% block addats %}
-        <a href="{% url 'add_ats' area_slug=ar.slug %}">Добавить АТС</a>
-    {% endblock %}
-    {% block ats %}
-    {% endblock %}
+      </thead>
+      <tbody>
+      {% for ats in page_obj %}
+        <tr>
+          <th scope="row">{{ ats.pk }}</th>
+          <td>
+            <a href="{{ ats.get_absolute_url }}">{{ ats.name }}</a><br>
+            <a href="{% url 'edit_ats' ats_slug=ats.slug %}">Изменить</a>|
+            <a href="{% url 'delete_ats' ats_slug=ats.slug %}">Удалить</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <nav>
+      <ul>
+        {% for p in page_obj.paginator.page_range %}
+          <li>
+            <a href="?page={{ p }}">{{ p }}</a>Страница пагинации
+          </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  {% endblock %}
+
+  {% block addats %}
+    <a href="{% url 'add_ats' area_slug=ar.slug %}">
+      <button class="btn btn-info rounded-pill px-3" type="button">Добавить АТС</button>
+    </a>
+  {% endblock %}
+  {% block ats %}
+  {% endblock %}
 {% endblock %}

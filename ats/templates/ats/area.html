@@ -11,8 +11,7 @@
             {% endif %}
         {% endfor %}
     </ul>
-    <a href="{% url 'add_area' dep_slug=dep.slug %}">Добавить новый район</a>
-    Добавить общий вывод информации по АТС обслуживаемых районов
+    <a href="{% url 'add_area' dep_slug=dep.slug %}"><button class="btn btn-info rounded-pill px-3" type="button">Добавить новый район</button></a>
 {% endblock %}
 
 

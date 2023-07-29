@@ -62,6 +62,7 @@ def ats(request, area_slug):#вернуть список районов подр
     if request.user.is_authenticated:
         ar = Area.objects.get(slug=area_slug)
         list_ats = Ats.objects.filter(area__name=ar.name)
+
         paginator = Paginator(list_ats, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -138,7 +139,7 @@ def ats_room(request, ats_slug):
         list_cable = Cable.objects.filter(ats__name=at.name)
         list_cross = Cross.objects.filter(ats__name=at.name)
 
-        list_note = Note.objects.all()# потом убрать или изменить связь в модели FK к Ats
+        list_note = Note.objects.all()# потом убрать или изменить связь в модели-FK к Ats
         paginator = Paginator(list_ats, 5)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)

@@ -1,59 +1,192 @@
 {% extends 'ats/ats_lst.html' %}
 
 {% block ats %}
-    состояние на АТС {{ at.name }}:
-    <ul>
-        <h4>Направление КЛС:</h4>
-        {% for lst in list_cable %}
-            {% if lst.passport %}
-            <li>{{ lst.direction }} <a href="{{ lst.passport.url }}" target="_blank" title="Открыть паспорт в новом окне">{{ lst.direction }}</a></li>
+  <table class="table table-bordered border-primary caption-top">
+    <caption>АТС {{ at.name }}</caption>
+    <thead>
+    <tr>
+      <th scope="col">Номер кросса</th>
+      <th scope="col">Наличие бирки на кроссе</th>
+      <th scope="col">Фото кросса</th>
+      <th scope="col">Фото вкладыша</th>
+      <th scope="col">СЛ №</th>
+      <th scope="col">Направление КЛС</th>
+      <th scope="col">Бирка на кабеле</th>
+      <th scope="col">Наличие заземления</th>
+      <th scope="col">Линейный паспорт</th>
+      <th scope="col">Примечание</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for cross in list_cross %}
+      {% if cross.cable_set.all %}
+        {% for cab in cross.cable_set.all %}
+          <tr>
+            <td>{{ cross.number }}<br>
+              <a href="{% url 'edit_cross' cross_slug=cross.slug %}">Изменить</a> |
+              <a href="{% url 'delete_cross' cross_slug=cross.slug %}">Удалить</a>
+            </td>
+            {% if cross.tag == True %}
+              <td align="center">{{ 'V' }}</td>
             {% else %}
-                <li>{{ lst.direction }}</li>
+              <td align="center">{{ '-' }}</td>
             {% endif %}
-            <a href="{% url 'edit_cable' cable_slug=lst.slug %}">Изменить</a> |
-            <a href="{% url 'delete_cable' cable_slug=lst.slug %}">Удалить</a>
-        {% endfor %}
-        <h4>Кроссы на АТС:</h4>
-        {% for lst in list_cross %}
-            {% if lst.photo_cross and lst.photo_insert %}
-            <li>{{ lst }} <a href="{{ lst.photo_cross.url }}" target="_blank"> <img src="{{ lst.photo_cross.url }}" width="50px"></a>
-                <a href="{{ lst.photo_insert.url }}" target="_blank"><img src="{{ lst.photo_insert.url }}" width="50px"></a></li>
-                {% elif lst.photo_cross %}
-                <li>{{ lst }} <a href="{{ lst.photo_cross.url }}" target="_blank"><img src="{{ lst.photo_cross.url }}" width="50px"></a></li>
-                {% elif lst.photo_insert %}
-                <li>{{ lst }} <a href="{{ lst.photo_insert.url }}" target="_blank"><img src="{{ lst.photo_insert.url }}" width="50px"></a></li>
+            <td>{% if cross.photo_cross %}
+              <a href="{{ cross.photo_cross.url }}" target="_blank"> <img
+                  src="{{ cross.photo_cross.url }}" width="50px"></a>
+            {% endif %}
+            </td>
+            <td>
+              {% if cross.photo_insert %}
+                <a href="{{ cross.photo_insert.url }}" target="_blank"><img
+                    src="{{ cross.photo_insert.url }}" width="50px"></a></li>
+              {% endif %}
+            </td>
+            <td>{{ cab.sl }}</td>
+            <td>{{ cab.direction }}<br>
+              <a href="{% url 'edit_cable' cable_slug=cab.slug %}">Изменить</a> |
+              <a href="{% url 'delete_cable' cable_slug=cab.slug %}">Удалить</a>
+            </td>
+            <td>{{ cab.tag }}</td>
+            {% if cab.grounding == True %}
+              <td align="center">{{ 'V' }}</td>
             {% else %}
-                <li>{{ lst }}</li>
+              <td align="center">{{ '-' }}</td>
             {% endif %}
-            <a href="{% url 'edit_cross' cross_slug=lst.slug %}">Изменить</a> |
-            <a href="{% url 'delete_cross' cross_slug=lst.slug %}">Удалить</a>
+            <td>{% if cab.passport %}
+              <a href="{{ cab.passport.url }}" target="_blank"
+                 title="Открыть паспорт в новом окне">{{ cab.direction }}</a>
+            {% endif %}
+            </td>
+            <td>
+              {% if cross.note_set.all %}
+                {% for note in cross.note_set.all %}
+                  {{ note }}<br>
+                  <a href="{% url 'edit_note' note_id=note.pk %}">Изменить</a> |
+                  <a href="{% url 'delete_note' note_id=note.pk %}">Удалить</a>
+                {% endfor %}
+              {% endif %}<br>
+              {% if cab.note_set.all %}
+                {% for note in cab.note_set.all %}
+                  {{ note }}<br>
+                  <a href="{% url 'edit_note' note_id=note.pk %}">Изменить</a> |
+                  <a href="{% url 'delete_note' note_id=note.pk %}">Удалить</a>
+                {% endfor %}
+              {% endif %}
+            </td>
+          </tr>
         {% endfor %}
-        <h4>примечания на АТС {{ at.name }}:</h4>
-        {% for lst in list_note %}
-            <li>{{ lst }}</li>
-            <a href="{% url 'edit_note' note_id=lst.pk %}">Изменить</a> |
-            <a href="{% url 'delete_note' note_id=lst.pk %}">Удалить</a>
-        {% endfor %}
-    </ul>
-    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <h3>Форма добавления КЛС</h3>
-        <h4>Добавьте КЛС</h4>
-        {{ form_cable.as_p }}
-        <button type="submit">Добавить</button>
-        <br>
-    </form>
-    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <h3>Форма добавления кросса</h3>
-        <h4>Добавьте кросс</h4>
-        {{ form_cross.as_p }}
-        <button type="submit">Добавить</button>
-    </form>
-    <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
-        {% csrf_token %}
-        <h4>Добавьте примечание</h4>
-        {{ form_note.as_p }}
-        <button type="submit">Добавить</button>
-    </form>
+      {% else %}
+        <tr>
+          <td>{{ cross.number }}<br>
+            <a href="{% url 'edit_cross' cross_slug=cross.slug %}">Изменить</a> |
+            <a href="{% url 'delete_cross' cross_slug=cross.slug %}">Удалить</a>
+          </td>
+          {% if cross.tag == True %}
+            <td align="center">{{ 'V' }}</td>
+          {% else %}
+            <td align="center">{{ '-' }}</td>
+          {% endif %}
+          <td>{% if cross.photo_cross %}
+            <a href="{{ cross.photo_cross.url }}" target="_blank"> <img src="{{ cross.photo_cross.url }}"
+                                                                        width="50px"></a>
+          {% endif %}
+          </td>
+          <td>
+            {% if cross.photo_insert %}
+              <a href="{{ cross.photo_insert.url }}" target="_blank"><img
+                  src="{{ cross.photo_insert.url }}" width="50px"></a></li>
+            {% endif %}
+          </td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>
+            {% if cross.note_set.all %}
+              {% for note in cross.note_set.all %}
+                {{ note }}<br>
+                <a href="{% url 'edit_note' note_id=note.pk %}">Изменить</a> |
+                <a href="{% url 'delete_note' note_id=note.pk %}">Удалить</a>
+              {% endfor %}
+            {% endif %}<br>
+            {% if cab.note_set.all %}
+              {% for note in cab.note_set.all %}
+                {{ note }}<br>
+                <a href="{% url 'edit_note' note_id=note.pk %}">Изменить</a> |
+                <a href="{% url 'delete_note' note_id=note.pk %}">Удалить</a>
+              {% endfor %}
+            {% endif %}
+          </td>
+        </tr>
+
+      {% endif %}
+    {% endfor %}
+    </tbody>
+  </table>
+
+
+
+{#  состояние на АТС {{ at.name }}:#}
+{#  <ul>#}
+{#    <h4>Направление КЛС:</h4>#}
+{#    {% for lst in list_cable %}#}
+{#      {% if lst.passport %}#}
+{#        <li>{{ lst.direction }} <a href="{{ lst.passport.url }}" target="_blank"#}
+{#                                   title="Открыть паспорт в новом окне">{{ lst.direction }}</a></li>#}
+{#      {% else %}#}
+{#        <li>{{ lst.direction }}</li>#}
+{#      {% endif %}#}
+{#      <a href="{% url 'edit_cable' cable_slug=lst.slug %}">Изменить</a> |#}
+{#      <a href="{% url 'delete_cable' cable_slug=lst.slug %}">Удалить</a>#}
+{#    {% endfor %}#}
+{#    <h4>Кроссы на АТС:</h4>#}
+{#    {% for lst in list_cross %}#}
+{#      {% if lst.photo_cross and lst.photo_insert %}#}
+{#        <li>{{ lst }} <a href="{{ lst.photo_cross.url }}" target="_blank"> <img src="{{ lst.photo_cross.url }}"#}
+{#                                                                                width="50px"></a>#}
+{#          <a href="{{ lst.photo_insert.url }}" target="_blank"><img src="{{ lst.photo_insert.url }}"#}
+{#                                                                    width="50px"></a></li>#}
+{#      {% elif lst.photo_cross %}#}
+{#        <li>{{ lst }} <a href="{{ lst.photo_cross.url }}" target="_blank"><img src="{{ lst.photo_cross.url }}"#}
+{#                                                                               width="50px"></a></li>#}
+{#      {% elif lst.photo_insert %}#}
+{#        <li>{{ lst }} <a href="{{ lst.photo_insert.url }}" target="_blank"><img src="{{ lst.photo_insert.url }}"#}
+{#                                                                                width="50px"></a></li>#}
+{#      {% else %}#}
+{#        <li>{{ lst }}</li>#}
+{#      {% endif %}#}
+{#      <a href="{% url 'edit_cross' cross_slug=lst.slug %}">Изменить</a> |#}
+{#      <a href="{% url 'delete_cross' cross_slug=lst.slug %}">Удалить</a>#}
+{#    {% endfor %}#}
+{#    <h4>примечания на АТС {{ at.name }}:</h4>#}
+{#    {% for lst in list_note %}#}
+{#      <li>{{ lst }}</li>#}
+{#      <a href="{% url 'edit_note' note_id=lst.pk %}">Изменить</a> |#}
+{#      <a href="{% url 'delete_note' note_id=lst.pk %}">Удалить</a>#}
+{#    {% endfor %}#}
+{#  </ul>#}
+  <br>
+  <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3>Форма добавления КЛС</h3>
+    <h4>Добавьте КЛС</h4>
+    {{ form_cable.as_p }}
+    <button type="submit">Добавить</button>
+    <br>
+  </form><br>
+  <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3>Форма добавления кросса</h3>
+    <h4>Добавьте кросс</h4>
+    {{ form_cross.as_p }}
+    <button type="submit">Добавить</button>
+  </form><br>
+  <form action="{% url 'ats_room' ats_slug=at.slug %}" method="post">
+    {% csrf_token %}
+    <h4>Добавьте примечание</h4>
+    {{ form_note.as_p }}
+    <button type="submit">Добавить</button>
+  </form>
 {% endblock %}
